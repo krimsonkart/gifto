@@ -67,7 +67,7 @@ const defaultTitleXpath = "//head/title/text()";
 
 let titleXpaths = {};
 let descriptionXpaths = {};
-let imageXpaths = {"www.amazon.com":'//*[@id="landingImage"]/@src'};
+let imageXpaths = {"www.amazon.com":'//*[@id="landingImage"]/@data-old-hires'};
 
 
 var getProducts = function(query, handleData) {
