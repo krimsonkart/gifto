@@ -92,8 +92,8 @@
     "jsx-quotes": "error",
     "react/no-unused-prop-types": "warn",
     "react/no-deprecated": "warn",
-    "react/jsx-space-before-closing": "error",
-    "react/jsx-curly-spacing": "error",
+    "react/jsx-space-before-closing": "warn",
+    "react/jsx-curly-spacing": "warn",
     "react/jsx-boolean-value": "warn",
     "react/jsx-wrap-multilines": "error",
     "react/self-closing-comp": "error",
@@ -107,7 +107,7 @@
     "react/jsx-no-undef": "error",
     "react/jsx-uses-vars": "error",
     "react/jsx-indent": [
-      "error",
+      "warn",
       2
     ]
   }

@@ -1,4 +1,6 @@
 /node_modules/
 /dist/*.js
 /dist/*.html
+.idea
 .DS_Store
+*.iml
