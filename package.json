@@ -10,7 +10,7 @@
     "watch-dev": "NODE_ENV=development webpack-dev-server --hot --inline",
     "api": "PORT=3000 nodemon server.js",
     "myFirst": "PORT=3001 nodemon myFirst.js",
-    "start": "NODE_ENV=production webpack && node server.js"
+    "start": "NODE_ENV=production webpack && node myFirst.js"
   },
   "engines": {
     "node": ">=6.9.1"
