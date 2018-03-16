@@ -4,18 +4,30 @@ import {
   Route,
   IndexRoute,
   hashHistory,
+  Link,
 } from 'react-router';
 import Layout from 'components';
-import { Home, ProductListHome, Add, AddProduct } from 'containers';
+import { ProductListHome, AddProduct, ListsHome, AddList } from 'containers';
 
 // App routes
 const Routes = (
   <Router history={hashHistory}>
-    <Route path="/" component={Layout}>
-      <IndexRoute component={ProductListHome} />
-      <Route path="AddProduct" component={AddProduct} />
-      <Route path="Add" component={Add} />
-    </Route>
+    <div>
+      <ul>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+      </ul>
+
+      <hr />
+
+      <Route exact path="/" component={Layout}>
+        <IndexRoute component={ListsHome} />
+        <Route path="/addList" component={AddList} />
+        <Route path="/addProduct/:listId" component={AddProduct} />
+        <Route path="/list/:listId" component={ProductListHome} />
+      </Route>
+    </div>
   </Router>
 );
 

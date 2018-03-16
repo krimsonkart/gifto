@@ -43,9 +43,9 @@
       "single"
     ],
     // Function
-    "prefer-rest-params": "error",
-    "space-before-function-paren": "error",
-    "space-before-blocks": "error",
+    "prefer-rest-params": "warn",
+    "space-before-function-paren": "warn",
+    "space-before-blocks": "warn",
     // Class 10.06
     "no-useless-constructor": "error",
     // Generators
@@ -61,10 +61,10 @@
     "spaced-comment": "error",
     // Whitespace
     "keyword-spacing": "error",
-    "space-infix-ops": "error",
+    "space-infix-ops": "warn",
     "eol-last": "error",
     "newline-per-chained-call": "off",
-    "space-in-parens": "error",
+    "space-in-parens": "warn",
     "array-bracket-spacing": "error",
     "object-curly-spacing": "off",
     "indent": [

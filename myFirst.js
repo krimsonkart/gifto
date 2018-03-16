@@ -9,6 +9,7 @@ const qs = require('querystring');
 const cors = require('cors');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const uuidv4 = require('uuid/v4');
 
 var mongourl = "mongodb://gifto_user:giftodb121@ds133776.mlab.com:33776/heroku_f2jnkg58";
 var mongoDbName = "heroku_f2jnkg58"
@@ -32,7 +33,16 @@ app.use(morgan('tiny'));
 
 var editProduct = function(){};
 
-app.route('/getProducts')
+app.route('/getLists/:userId')
+  .get((req, res) => {
+      let handleData = function(data) {
+          res.writeHead(200, {'Content-Type': 'application/json'});
+          res.end(JSON.stringify(data));
+      };
+      getLists(req.params, handleData);
+  });
+
+app.route('/getProducts/:listId')
   .get((req, res) => {
       let handleData = function(data) {
           res.writeHead(200, {'Content-Type': 'application/json'});
@@ -58,6 +68,15 @@ app.route('/addProduct')
       };
       addProduct(req.params, req.body, handleData);
   });
+
+  app.route('/addList')
+    .post((req, res) => {
+        let handleData = function(data) {
+            res.writeHead(200, {'Content-Type': 'application/json'});
+            res.end(JSON.stringify(data));
+        };
+        addList(req.params, req.body, handleData);
+    });
 app.listen(port, () => console.log(`JSON Server is running on port ${port}!`));
 
 
@@ -70,11 +89,28 @@ let descriptionXpaths = {};
 let imageXpaths = {"www.amazon.com":'//*[@id="landingImage"]/@data-old-hires'};
 
 
+var getLists = function(query, handleData) {
+    MongoClient.connect(mongourl, function(err, db) {
+        if (err) throw err;
+        var dbase = db.db(mongoDbName);
+        var dbQuery = { userId: query.userId };
+        dbase.collection("lists").find(query).toArray( function(err, result) {
+            if (err) {
+                console.error("Error occured:"+err);
+                throw err;
+            }
+            console.log("result:"+JSON.stringify(result));
+            db.close();
+            handleData(result);
+        });});
+};
+
 var getProducts = function(query, handleData) {
     MongoClient.connect(mongourl, function(err, db) {
         if (err) throw err;
         var dbase = db.db(mongoDbName);
-        dbase.collection("products").find({}).toArray( function(err, result) {
+        var dbQuery = { userId: query.listId };
+        dbase.collection("products").find(query).toArray( function(err, result) {
             if (err) {
                 console.error("Error occured:"+err);
                 throw err;
@@ -90,9 +126,27 @@ var addProduct = function(query, formData, handleData) {
         if (err) throw err;
         console.log("Form data {}", formData);
         var dbase = db.db(mongoDbName);
-        const product = {url: formData.url, title: formData.title, description: formData.description, image:formData.image};
+        const product = {id: uuidv4(), listId: formData.listId, url: formData.url, title: formData.title, description: formData.description, image:formData.image};
         console.log("Adding product:"+JSON.stringify(product));
         dbase.collection("products").insertOne(product, function(err, result) {
+            if (err) {
+                console.error("Error occured:"+err);
+                throw err;
+            }
+            console.log("result:"+JSON.stringify(result));
+            db.close();
+            handleData(result);
+        });});
+};
+
+var addList = function(query, formData, handleData) {
+    MongoClient.connect(mongourl, function(err, db) {
+        if (err) throw err;
+        console.log("Form data {}", formData);
+        var dbase = db.db(mongoDbName);
+        const product = {id: uuidv4(), userId: formData.userId, type: formData.type, date: formData.date, title: formData.title, description: formData.description, image:formData.image};
+        console.log("Adding list:"+JSON.stringify(product));
+        dbase.collection("lists").insertOne(product, function(err, result) {
             if (err) {
                 console.error("Error occured:"+err);
                 throw err;
@@ -188,4 +242,3 @@ http.createServer(function (request, response) {
 });
     // .listen(port);
 // console.log('Server running at localhost:'+port);
-

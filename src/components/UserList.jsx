@@ -1,8 +1,10 @@
 import React from 'react';
 import AutoFitImage from 'react-image-autofit-frame';
+import { Link } from 'react-router';
 
-const Product = (props) => {
-  const { url, title, description, image} = props;
+const UserList = (props) => {
+  const { id, title, description, image, date, type} = props;
+  const listLink = `/list/${id}`;
   // console.log('Rendering product {}', props);
   return (
     <div className="col-md-3">
@@ -12,11 +14,11 @@ const Product = (props) => {
         />
       </div>
       <div className="video-info">
-        <h4><a href="#">{title}</a></h4>
+        <h4><Link to={listLink}>{title}</Link></h4>
         <p>{description}</p>
       </div>
     </div>
   );
 };
 
-export default Product;
+export default UserList;

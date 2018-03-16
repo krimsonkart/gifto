@@ -1,20 +1,26 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
-import {ADD_API, URL_DETAIL_API} from '../config';
+import {ADD_LIST_API, URL_DETAIL_API, USER_ID} from '../config';
 import { Footer } from 'components';
 import AutoFitImage from 'react-image-autofit-frame';
 
-export default class AddProduct extends Component {
+export default class AddList extends Component {
 
   constructor (props) {
     super(props);
+    // const { match: { params } } = this.props;
+    // console.log(params);
+
     // Set the URL to empty string
-    this.state = {url: '', title: '', description: '', image:'', errors: null, listId: props.params.listId};
+    const userId = localStorage.getItem('user_id');
+    this.state = { title:'', description:'', image:'', date:'', type:'', userId};
     // Bind to this
+    // , userId:${params.userId}
     this.handleTitleChange = this.handleTitleChange.bind(this);
-    this.handleUrlChange = this.handleUrlChange.bind(this);
+    this.handleDateChange = this.handleDateChange.bind(this);
     this.handleImageChange = this.handleImageChange.bind(this);
     this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
+    this.handleTypeChange = this.handleTypeChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.sendToServer = this.sendToServer.bind(this);
@@ -30,14 +36,22 @@ export default class AddProduct extends Component {
     });
   }
 
-  async handleUrlChange (event) {
+  handleDateChange (event) {
     const value = event.target.value;
     this.setState(() => {
       return {
-        url: value,
+        date: value,
       };
     });
-    await this.getDetails(value);
+  }
+
+  handleTypeChange (event) {
+    const value = event.target.value;
+    this.setState(() => {
+      return {
+        type: value,
+      };
+    });
   }
 
   handleDescriptionChange (event) {
@@ -71,35 +85,9 @@ export default class AddProduct extends Component {
     }
   }
 
-  filestack = () => {
-    return client.pick(
-      {
-        accept: 'video/*',
-        maxSize: 1024 * 1024 * 100,
-      }
-    );
-  };
-
-  async getDetails (url) {
-    // console.log('Fetching details for url {}', url);
-    try {
-      let response = await fetch(URL_DETAIL_API + encodeURIComponent(url));
-      response = await response.json();
-      this.setState(() => {
-        return {
-          image: response.image,
-          description: response.description,
-          title: response.title,
-        };
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
   async sendToServer () {
     // POST to /api/v1/videos to insert a new video in the DB
-    console.log('Adding product');
+    console.log('Adding List');
     const request = {
       method: 'POST',
       headers: {
@@ -109,7 +97,7 @@ export default class AddProduct extends Component {
       body: JSON.stringify(this.state),
     };
     try {
-      const response = await fetch(ADD_API, request);
+      const response = await fetch(ADD_LIST_API, request);
       return await response.json();
     } catch (e) {
       console.log(e);
@@ -118,7 +106,6 @@ export default class AddProduct extends Component {
 
   async handleSubmit (e) {
     e.preventDefault();
-    const { url, title, description, image } = this.state;
     // First we call the process API to start the trascoding and get the uuid
     try {
       const server = await this.sendToServer();
@@ -134,13 +121,14 @@ export default class AddProduct extends Component {
   }
 
   render () {
-    const { url, title, description, image} = this.state;
+    console.log('Rendering List adding page');
+    const { title, description, date, type, image} = this.state;
     return (
       <div className="container">
         <div className=".col-md-offset-4 media-list">
           <div className="panel panel-default">
             <div className="panel-heading">
-              <h2 className="panel-title text-center">Add product</h2>
+              <h2 className="panel-title text-center">Add new List</h2>
             </div>
             <div className="panel-body">
               <form name="document-form" onSubmit={this.handleSubmit}>
