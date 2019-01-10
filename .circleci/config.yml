@@ -32,66 +32,6 @@ jobs:
         path: /tmp/circleci-artifacts
     - store_artifacts:
         path: /tmp/circleci-test-results
-  deploy:
-    working_directory: ~/BeProductiv/usage-data-service
-    parallelism: 1
-    shell: /bin/bash --login
-    docker:
-    - image: circleci/node:8.11.3-jessie-browsers
-      command: /sbin/init
-    steps:
-    - checkout
-    - run:
-        name: Installing deployment dependencies
-        command: |
-          sudo apt-get install python-pip libpython-dev
-          sudo pip install urllib3==1.22
-          sudo pip install awsebcli --upgrade
-    - run:
-        name: Deploying Scheduler
-        command: eb deploy UsageDataService-scheduler --timeout 20
-#    - run:
-#        name: Deploying lambda
-#        command: cd lambda && sh packager.sh
-#    - run:
-#        name: Deploying Service
-#        command: eb deploy UsageDataService-dev --timeout 20
-  prod-service-deploy:
-    working_directory: ~/BeProductiv/usage-data-service
-    parallelism: 1
-    shell: /bin/bash --login
-    docker:
-    - image: circleci/node:8.11.3-jessie-browsers
-      command: /sbin/init
-    steps:
-    - checkout
-    - run:
-        name: Installing deployment dependencies
-        command: |
-          sudo apt-get install python-pip libpython-dev
-          sudo pip install urllib3==1.22
-          sudo pip install awsebcli --upgrade
-    - run:
-        name: Deploying Service
-        command: eb deploy UsageDataService-dev --timeout 20
-  prod-scheduler-deploy:
-    working_directory: ~/BeProductiv/usage-data-service
-    parallelism: 1
-    shell: /bin/bash --login
-    docker:
-    - image: circleci/node:8.11.3-jessie-browsers
-      command: /sbin/init
-    steps:
-    - checkout
-    - run:
-        name: Installing deployment dependencies
-        command: |
-          sudo apt-get install python-pip libpython-dev
-          sudo pip install urllib3==1.22
-          sudo pip install awsebcli --upgrade
-    - run:
-        name: Deploying Scheduler
-        command: eb deploy UsageDataService-scheduler --timeout 20
   prod-lambda-deploy:
     working_directory: ~/BeProductiv/usage-data-service
     parallelism: 1
@@ -105,32 +45,21 @@ jobs:
         name: Installing deployment dependencies
         command: |
           cat /etc/os-release
-          sudo apt-get install python-setuptools
-          sudo apt-get install libpython-dev rsync grsync
-          sudo easy_install -U pip
+          sudo apt-get install python-pip libpython-dev rsync grsync
           sudo pip install urllib3==1.22
           sudo pip install aws --upgrade
           sudo pip install aws-sam-cli --upgrade
           sudo pip install awsebcli --upgrade
     - run:
         name: Deploying lambda
-        command: cd lambda && sh packager.sh
+        command: |
+          aws -h
+          eb -h
+          sam -h
 
 workflows:
   version: 2
   build_deploy:
     jobs:
-#      - deploy
-#      - request-prod-service-deploy:
-#          type: approval
-#          requires:
-#            - deploy
-#      - request-prod-lambda-deploy:
-#          type: approval
-#      - prod-service-deploy:
-#          requires:
-#            - request-prod-service-deploy
       - prod-lambda-deploy
-#          requires:
-#            - request-prod-lambda-deploy
 
