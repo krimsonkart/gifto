@@ -8,7 +8,7 @@ jobs:
       CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
     docker:
-    - image: circleci/node:8.11.3-jessie-browsers
+    - image: progressly/circleci_node-aws:latest
       command: /sbin/init
     steps:
     - checkout
@@ -33,22 +33,17 @@ jobs:
     - store_artifacts:
         path: /tmp/circleci-test-results
   prod-lambda-deploy:
-    working_directory: ~/BeProductiv/usage-data-service
+    working_directory: ~/krimsonkart/gifto
     parallelism: 1
     shell: /bin/bash --login
     docker:
-    - image: circleci/node:10.10.0-jessie-browsers
+    - image: progressly/circleci_node-aws:latest
       command: /sbin/init
     steps:
     - checkout
     - run:
         name: Installing deployment dependencies
         command: |
-          cat /etc/os-release
-          sudo apt-get install python-pip libpython-dev rsync grsync
-          sudo pip install setuptools --upgrade
-          sudo pip install urllib3==1.22
-          sudo pip install aws --upgrade
           sudo pip install aws-sam-cli --upgrade
           sudo pip install awsebcli --upgrade
     - run:
