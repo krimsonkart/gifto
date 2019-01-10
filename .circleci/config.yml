@@ -38,7 +38,7 @@ jobs:
     shell: /bin/bash --login
     docker:
     - image: progressly/circleci_node-aws:latest
-      command: /sbin/init
+      command: /bin/sh
     steps:
     - checkout
     - run:
